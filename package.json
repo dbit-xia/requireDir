@@ -1,5 +1,5 @@
 {
-  "name": "require-dir",
+  "name": "runsa-require-dir",
   "description": "Helper to require() directories.",
   "version": "1.2.0",
   "author": "Aseem Kishore <aseem.kishore@gmail.com>",
@@ -16,9 +16,9 @@
   "scripts": {
     "test": "node test"
   },
-  "homepage": "https://github.com/aseemk/requireDir",
+  "homepage": "https://github.com/dbit-xia/requireDir",
   "repository": {
     "type": "git",
-    "url": "git://github.com/aseemk/requireDir.git"
+    "url": "git://github.com/dbit-xia/requireDir.git"
   }
 }

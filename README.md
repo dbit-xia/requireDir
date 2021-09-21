@@ -34,7 +34,7 @@ If CoffeeScript is registered via `require('coffee-script/register')`,
 ## Installation
 
 ```
-npm install require-dir
+npm install runsa-require-dir
 ```
 
 Note that this package is *not* `requireDir` — turns out that's already
@@ -45,7 +45,7 @@ Note that this package is *not* `requireDir` — turns out that's already
 Basic usage that examines only directories' immediate files:
 
 ```js
-var requireDir = require('require-dir');
+var requireDir = require('runsa-require-dir')(__filename);
 var dir = requireDir('./path/to/dir');
 ```
 
@@ -128,7 +128,7 @@ requireDir('./dir', { extensions: ['.js', '.json'] })
 Make an `index.js` in a directory with this code to clean things up:
 
 ```js
-module.exports = require('require-dir')();   // defaults to '.'
+module.exports = require('runsa-require-dir')(__filename)();   // defaults to '.'
 ```
 
 And don't worry, the calling file is always ignored to prevent infinite loops.
