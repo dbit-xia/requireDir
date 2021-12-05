@@ -45,7 +45,7 @@ Note that this package is *not* `requireDir` — turns out that's already
 Basic usage that examines only directories' immediate files:
 
 ```js
-var requireDir = require('runsa-require-dir')(__filename);
+var requireDir = require('runsa-require-dir');
 var dir = requireDir('./path/to/dir');
 ```
 
