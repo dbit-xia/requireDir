@@ -128,7 +128,7 @@ requireDir('./dir', { extensions: ['.js', '.json'] })
 Make an `index.js` in a directory with this code to clean things up:
 
 ```js
-module.exports = require('runsa-require-dir')(__filename)();   // defaults to '.'
+module.exports = require('runsa-require-dir')();   // defaults to '.'
 ```
 
 And don't worry, the calling file is always ignored to prevent infinite loops.
