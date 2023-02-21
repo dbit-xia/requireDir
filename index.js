@@ -26,11 +26,21 @@ module.exports = function requireDir(dir, opts) {
         const err = {};
         Error.captureStackTrace(err, requireDir);
         let lines = err.stack.split('\n');
+
+        //es import
         let match = lines[1].match(/file:\/\/(.+\.mjs):\d+:\d+$/);
-        if (match) {
-            parentFile = match[1];
-        } else {
-            parentFile = lines[1].match(/\((.+):\d+:\d+\)/)[1];
+        if (match) parentFile = match[1];
+
+        if (!match) {
+            //require
+            match = lines[1].match(/\((.+):\d+:\d+\)/);
+            if (match) parentFile = match[1];
+        }
+
+        if (!match) {
+            //promiseStack
+            match = lines[1].match(/\at (.+):\d+:\d+$/);
+            if (match) parentFile = match[1];
         }
         dir = path.resolve(path.dirname(parentFile), dir);
     } else {
