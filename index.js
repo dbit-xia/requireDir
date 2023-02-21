@@ -4,7 +4,6 @@
 let fs = require('fs');
 let path = require('path');
 
-const isESImport = process.argv[1].toLocaleLowerCase().endsWith('.mjs');
 
 // make a note of the calling file's path, so that we can resolve relative
 // paths. this only works if a fresh version of this module is run on every
@@ -26,10 +25,12 @@ module.exports = function requireDir(dir, opts) {
     if (dir[0] === '.') {
         const err = {};
         Error.captureStackTrace(err, requireDir);
-        if (isESImport) { //es import
-            parentFile = err.stack.match(/file:\/\/(.+):\d+:\d+\n/)[1];
+        let lines = err.stack.split('\n');
+        let match = lines[1].match(/file:\/\/(.+\.mjs):\d+:\d+$/);
+        if (match) {
+            parentFile = match[1];
         } else {
-            parentFile = err.stack.match(/\((.+):\d+:\d+\)/)[1];
+            parentFile = lines[1].match(/\((.+):\d+:\d+\)/)[1];
         }
         dir = path.resolve(path.dirname(parentFile), dir);
     } else {
@@ -154,7 +155,7 @@ module.exports = function requireDir(dir, opts) {
             if (!map.hasOwnProperty(base)) {
                 continue;
             }
-            
+
             let newKey = opts.mapKey ? opts.mapKey(map[base], base) : base;
             let newVal = opts.mapValue ? opts.mapValue(map[base], newKey) : map[base];
             delete map[base];
