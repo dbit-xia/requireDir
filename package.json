@@ -1,7 +1,7 @@
 {
   "name": "runsa-require-dir",
   "description": "Helper to require() directories.",
-  "version": "3.0.0",
+  "version": "3.0.2",
   "author": "Aseem Kishore <aseem.kishore@gmail.com>",
   "license": "MIT",
   "dependencies": {},
