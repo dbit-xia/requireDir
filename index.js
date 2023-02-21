@@ -1,15 +1,17 @@
 // requireDir.js
 // See README.md for details.
 
-var fs = require('fs');
-var path = require('path');
+let fs = require('fs');
+let path = require('path');
+
+const isESImport = process.argv[1].toLocaleLowerCase().endsWith('.mjs');
 
 // make a note of the calling file's path, so that we can resolve relative
 // paths. this only works if a fresh version of this module is run on every
 // require(), so important: we clear the require() cache each time!
-// var parent = module.parent;
-// var parentFile = parent.filename;
-// var parentDir = path.dirname(parentFile);
+// let parent = module.parent;
+// let parentFile = parent.filename;
+// let parentDir = path.dirname(parentFile);
 // delete require.cache[__filename];
 
 module.exports = function requireDir(dir, opts) {
@@ -24,7 +26,11 @@ module.exports = function requireDir(dir, opts) {
     if (dir[0] === '.') {
         const err = {};
         Error.captureStackTrace(err, requireDir);
-        parentFile = err.stack.match(/\((.+):\d+:\d+\)/)[1];
+        if (isESImport) { //es import
+            parentFile = err.stack.match(/file:\/\/(.+):\d+:\d+\n/)[1];
+        } else {
+            parentFile = err.stack.match(/\((.+):\d+:\d+\)/)[1];
+        }
         dir = path.resolve(path.dirname(parentFile), dir);
     } else {
         parentFile = path.join(dir, 'index.js');
@@ -32,16 +38,16 @@ module.exports = function requireDir(dir, opts) {
     
     // read the directory's files:
     // note that this'll throw an error if the path isn't a directory.
-    var files = fs.readdirSync(dir);
+    let files = fs.readdirSync(dir);
     
     // to prioritize between multiple files with the same basename, we'll
     // first derive all the basenames and create a map from them to files:
-    var filesForBase = {};
+    let filesForBase = {};
     
-    for (var i = 0; i < files.length; i++) {
-        var file = files[i];
-        var ext = path.extname(file);
-        var base = path.basename(file, ext);
+    for (let i = 0; i < files.length; i++) {
+        let file = files[i];
+        let ext = path.extname(file);
+        let base = path.basename(file, ext);
         (filesForBase[base] = filesForBase[base] || []).push(file);
     }
     
@@ -53,12 +59,12 @@ module.exports = function requireDir(dir, opts) {
     // we create and return a map from basename to require()'d contents! and
     // if duplicates are asked for, we'll never short-circuit; we'll just add
     // to the map using the full filename as a key also.
-    var map = {};
+    let map = {};
     
     // get the array of extensions we need to require
-    var extensions = opts.extensions || Object.keys(require.extensions);
+    let extensions = opts.extensions || Object.keys(require.extensions);
 
-    for (var base in filesForBase) {
+    for (let base in filesForBase) {
         // protect against enumerable object prototype extensions:
         if (!filesForBase.hasOwnProperty(base)) {
             continue;
@@ -67,12 +73,12 @@ module.exports = function requireDir(dir, opts) {
         // go through the files for this base and check for directories. we'll
         // also create a hash "set" of the non-dir files so that we can
         // efficiently check for existence in the next step:
-        var files = filesForBase[base];
-        var filesMinusDirs = {};
+        let files = filesForBase[base];
+        let filesMinusDirs = {};
         
-        for (var i = 0; i < files.length; i++) {
-            var file = files[i];
-            var abs = path.resolve(dir, file);
+        for (let i = 0; i < files.length; i++) {
+            let file = files[i];
+            let abs = path.resolve(dir, file);
             
             // ignore the calling file:
             if (abs === parentFile) {
@@ -110,8 +116,8 @@ module.exports = function requireDir(dir, opts) {
         // otherwise, go through and try each require.extension key!
         for (ext of extensions) {
             // if a file exists with this extension, we'll require() it:
-            var file = base + ext;
-            var abs = filesMinusDirs[file];
+            let file = base + ext;
+            let abs = filesMinusDirs[file];
             
             if (abs) {
                 // ignore TypeScript declaration files. They should never be
@@ -143,14 +149,14 @@ module.exports = function requireDir(dir, opts) {
     }
     
     if (opts.mapKey || opts.mapValue) {
-        for (var base in map) {
+        for (let base in map) {
             // protect against enumerable object prototype extensions:
             if (!map.hasOwnProperty(base)) {
                 continue;
             }
             
-            var newKey = opts.mapKey ? opts.mapKey(map[base], base) : base;
-            var newVal = opts.mapValue ? opts.mapValue(map[base], newKey) : map[base];
+            let newKey = opts.mapKey ? opts.mapKey(map[base], base) : base;
+            let newVal = opts.mapValue ? opts.mapValue(map[base], newKey) : map[base];
             delete map[base];
             map[newKey] = newVal;
         }
